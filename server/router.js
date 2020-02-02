@@ -5,41 +5,4 @@ const api = require('./api');
 router.get('/getAllRes', (req, res, next) => {
   api.getAllRes(req, res, next);
 });
-
-router.post('/updateMedbyId', (req, res, next) => {
-  api.updateMedbyId(req, res, next);
-});
-
-router.post('/insertMed', (req, res, next) => {
-  api.insertMed(req, res, next);
-});
-
-router.delete('/deleteMedbyId', (req, res, next) => {
-  api.deleteMedbyId(req, res, next);
-});
-
-router.get('/getAllOrd', (req, res, next) => {
-  api.getAllOrd(req, res, next);
-});
-
-router.post('/insertOrd', (req, res, next) => {
-  api.insertOrd(req, res, next);
-});
-
-router.get('/getAllPatient', (req, res, next) => {
-  api.getAllPatient(req, res, next);
-});
-
-router.post('/insertPatientOrderPage', (req, res, next) => {
-  api.insertPatientOrderPage(req, res, next);
-});
-
-router.post('/insertPatientDetailPage', (req, res, next) => {
-  api.insertPatientDetailPage(req, res, next);
-});
-
-router.get('/getTokenFromLogin', (req, res, next) => {
-  api.getTokenFromLogin(req, res, next);
-});
-
 module.exports = router;
