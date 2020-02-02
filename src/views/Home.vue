@@ -165,10 +165,8 @@
           let words = openTime.split('-')
           if(words[0] == '12')
             words[0] = '1200';
-          let start = words[0].split(':').join();
-          let end = words[1].split(':').join();
-          alert(curTime);
-          alert(start);
+          let start = words[0].split(':').join('');
+          let end = words[1].split(':').join('');
           if(curTime < start || curTime > end){
             return false;
           }else{
@@ -179,13 +177,8 @@
         }
       },
 
-      getAll: function() {
-        this.$http.get('/api/getAllRes').then( (res) => {
-          this.cacheAllRes = res.data;
-          let curTime = this.getCurTime();
-          let now = new Date();
-          let day = now.getDay();
-          for(let item of this.cacheAllRes) {
+      checkOpenByDayTime: function(day, curTime){
+        for(let item of this.cacheAllRes) {
             if(day == 0){
               let openTime = item.sunday;
               let isOpen = this.checkIfOpen(openTime, curTime);
@@ -198,11 +191,79 @@
               if(isOpen){
                 this.items.push(item);
               }
+            }else if(day == 2){
+              let openTime = item.tuesday;
+              let isOpen = this.checkIfOpen(openTime, curTime);
+              if(isOpen){
+                this.items.push(item);
+              }
+            }else if(day == 3){
+              let openTime = item.wednesday;
+              let isOpen = this.checkIfOpen(openTime, curTime);
+              if(isOpen){
+                this.items.push(item);
+              }
+            }else if(day == 4){
+              let openTime = item.thursday;
+              let isOpen = this.checkIfOpen(openTime, curTime);
+              if(isOpen){
+                this.items.push(item);
+              }
+            }else if(day == 5){
+              let openTime = item.friday;
+              let isOpen = this.checkIfOpen(openTime, curTime);
+              if(isOpen){
+                this.items.push(item);
+              }
+            }else if(day == 6){
+              let openTime = item.saturday;
+              let isOpen = this.checkIfOpen(openTime, curTime);
+              if(isOpen){
+                this.items.push(item);
+              }
             }
-              
-
-
           }
+      },
+
+      findOpenR: function(){
+        if(!this.time)
+          returm;
+        var day=0;
+        switch(this.selectedDate){
+          case('星期日'):
+            day = 0;
+            break;
+          case('星期一'):
+            day = 1;
+            break;
+          case('星期二'):
+            day = 2;
+            break;
+          case('星期三'):
+            day = 3;
+            break;
+          case('星期四'):
+            day = 4;
+            break;
+          case('星期五'):
+            day = 5;
+            break;
+          case('星期六'):
+            day = 6;
+            break;
+        }
+        let curTime = this.time.split(':').join('');
+        this.items = [];
+        this.checkOpenByDayTime(day, curTime);
+      },
+
+      getAll: function() {
+        this.$http.get('/api/getAllRes').then( (res) => {
+          this.cacheAllRes = res.data;
+          let curTime = this.getCurTime();
+          let now = new Date();
+          let day = now.getDay();
+          this.checkOpenByDayTime(day, curTime);
         })
       },
       onSignInSuccess(googleUser) {

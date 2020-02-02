@@ -101,7 +101,7 @@
 
     methods: {
       getAll: function() {
-        this.$http.get('/api/getAllMedbyType').then( (res) => {
+        this.$http.get('/api/getAllRes').then( (res) => {
           this.items = res.data;
         })
       },
