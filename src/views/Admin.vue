@@ -6,7 +6,6 @@
       dark
     >
       <v-toolbar-title>面试程序</v-toolbar-title>
-      {{status}}
       <v-spacer />
       <v-toolbar-items>
         <v-row
@@ -19,6 +18,14 @@
             text-color="white"
           >
             管理员界面
+          </v-chip>
+          <v-chip
+            class="ma-2"
+            color="green"
+            text-color="white"
+            @click.stop="logout"
+          >
+            登出
           </v-chip>
         </v-row>
       </v-toolbar-items>
@@ -42,13 +49,6 @@
             <template v-slot:item.action="{ item }">
               <v-icon
                 small
-                class="mr-2"
-                @click="editItem(item)"
-              >
-                mdi-pencil
-              </v-icon>
-              <v-icon
-                small
                 @click="deleteItem(item.id)"
               >
                 mdi-close
@@ -58,6 +58,29 @@
             <v-btn block color='indigo' class="mr-2" @click="addRes">添加餐厅</v-btn>
           </v-col>
         </v-row>
+        <v-snackbar
+          v-model="snackbar"
+          :color="snackbarColor"
+          :timeout="3000"
+          top
+          dark
+        >
+          <v-icon
+            color="white"
+            class="mr-3"
+          >
+            mdi-bell-plus
+          </v-icon>
+          {{notification}}
+          <v-btn
+            icon
+            @click="snackbar = false"
+          >
+            <v-icon>
+              mdi-close-circle
+            </v-icon>
+          </v-btn>
+        </v-snackbar>
       </v-container>
     </v-content>
     <v-footer
@@ -94,8 +117,12 @@
           { text: '先交定金', value: 'bookingfee' },
           { text: '评价', value: 'rating' },
           { text: '地理位置', value: 'location' },
+          { text: 'Actions', value: 'action', sortable: false },
         ],
         items: [],
+        snackbar: false,
+        snackbarColor: '',
+        notification: '',
       }
     },
 
@@ -108,7 +135,24 @@
 
       addRes: function() {
 
-      }
+      },
+
+      deleteItem(resId){
+        this.$http.delete('/api/deleteResbyId',{
+          params: {
+						id : resId
+					}
+        }).then( () => {
+          this.snackbar = true;
+          this.notification = '删除成功';
+          this.snackbarColor = 'green';
+          this.getAll();
+        })
+      },
+
+      logout: function() {
+        this.$router.push({ path: '/' });
+      },
     },
     mounted: function() {
       this.getAll();

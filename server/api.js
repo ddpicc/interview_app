@@ -22,5 +22,16 @@ module.exports = {
       })
     })
   },
+
+  deleteResbyId(req, res, next) {
+    var id = req.query.id;
+    pool.getConnection((err, connection) => {
+      var sql = sqlMap.deleteResbyId;
+      connection.query(sql, [id], (err, result) => {
+          res.json(result);
+          connection.release();
+      })
+    })
+  },
   
 }

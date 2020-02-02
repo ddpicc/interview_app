@@ -13,7 +13,7 @@
           align="center"
           class="mx-0"
         >
-          <v-btn text @click.stop="adminLoginClick">管理员登录</v-btn>
+          <v-btn text @click.stop="dialog = true">管理员登录</v-btn>
           <g-signin-button
             :params="googleSignInParams"
             @success="onSignInSuccess"
@@ -76,19 +76,69 @@
               :headers="headers"
               :items="items"
               :items-per-page="15"
+              item-key="name"
             >
             <template v-slot:item.action="{ item }">
               <v-icon
                 small
                 class="mr-2"
-                @click="editItem(item)"
+                @click="reserveRes(item)"
               >
-                mdi-pencil
+                预定
               </v-icon>
             </template>
             </v-data-table>
           </v-col>
         </v-row>
+        <v-dialog v-model="dialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">登录</v-card-title>
+            <v-card-text>
+              <v-spacer></v-spacer>
+              <v-text-field
+                label="Login"
+                name="login"
+                type="text"
+                v-model="loginName"
+              />
+
+              <v-text-field
+                id="password"
+                label="Password"
+                name="password"
+                type="password"
+                v-model="password"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="green darken-1" text @click="loginConfirm">确认</v-btn>
+              <v-btn color="green darken-1" text @click="dialog = false">取消</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-snackbar
+          v-model="snackbar"
+          :color="snackbarColor"
+          :timeout="3000"
+          top
+          dark
+        >
+          <v-icon
+            color="white"
+            class="mr-3"
+          >
+            mdi-bell-plus
+          </v-icon>
+          {{notification}}
+          <v-btn
+            icon
+            @click="snackbar = false"
+          >
+            <v-icon>
+              mdi-close-circle
+            </v-icon>
+          </v-btn>
+        </v-snackbar>
       </v-container>
     </v-content>
     <v-footer
@@ -121,21 +171,24 @@
           { text: '停车', value: 'parking' },
           { text: '外送', value: 'takeOut' },
           { text: '评价', value: 'rating' },
+          { text: '操作', value: 'action', sortable: false }
         ],
         items: [],
         dateItems: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
         selectedDate: '',
         time: null,
         menu2: false,
-        cacheAllRes: []
+        cacheAllRes: [],
+        dialog: false,
+        loginName: '',
+        password: '',
+        snackbar: false,
+        snackbarColor: '',
+        notification: '',
       }
     },
 
     methods: {
-      adminLoginClick: function(){
-        this.$router.push({ path: '/admin' });
-      },
-
       statusChangeCallback: function(response) {
         if (response.status === 'connected') {
           this.status = 'In';
@@ -266,6 +319,26 @@
           this.checkOpenByDayTime(day, curTime);
         })
       },
+
+      loginConfirm: function(){
+        if(this.loginName != 'admin' || this.password != 'admin'){
+          this.snackbar = true;
+          this.notification = '用户名密码不正确';
+          this.snackbarColor = 'grey';
+          this.dialog = false;
+        }else{
+          this.snackbar = true;
+          this.notification = '登入管理员身份';
+          this.snackbarColor = 'grey';
+          this.dialog = false;
+          this.$router.push({ path: '/admin' });
+        }
+      },
+
+      reserveRes: function(){
+
+      },
+
       onSignInSuccess(googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
